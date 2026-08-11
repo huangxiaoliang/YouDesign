@@ -70,7 +70,7 @@
     "electron": "^39.8.10",
     "electron-builder": "^26.0.12",
     "esbuild": "^0.28.1",
-    "jsdom": "^26.1.0",
+    "jsdom": "^30.0.1",
     "playwright": "^1.61.1",
     "react-resizable": "^4.0.2",
     "typescript": "^5.7.0",
