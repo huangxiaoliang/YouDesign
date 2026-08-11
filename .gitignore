@@ -33,3 +33,5 @@ data/
 
 .vercel
 .env*
+!.env.example
+!.env.example.en
