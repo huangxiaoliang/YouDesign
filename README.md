@@ -2,17 +2,19 @@
 
 [![CI](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml/badge.svg)](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-高保真原型设计Agent：
-- 用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，分钟级生成可交互的高保真原型；
-- Chrome插件提取指定页面，进行二次设计；
-- 支持点选页面进行局部修改（自然语言or直接编辑修改）；
-- 支持需求卡模式。
+**高保真原型设计Agent：**
+- 用自然语言（可附截图 / HTML及资源包 / Markdown）描述页面，分钟级生成可交互的高保真原型；
+- **Chrome插件**抓取指定页面，进行二次设计；
+- **Mac/Windows桌面端**支持超大html的二次设计；
+- 支持 点选页面 指定区域 进行 局部深度修改（自然语言 or 直接编辑修改）；
+- 支持需求卡模式，内置Ant Design等多种设计风格。
+- **Web地址**：https://youdesign-gamma.vercel.app/youdesign 
+- **体验账号**：邮件联系 coolway.me@gmail.com
+
 ---
 
 ## 快速开始
 
-- 体验地址：https://youdesign-gamma.vercel.app/youdesign 
-- 体验账号：邮件联系我 coolway.me@gmail.com
 
 ```bash
 npm install
@@ -73,12 +75,11 @@ npm run build && npm run start    # http://localhost:3000/youdesign
 - **图片上传意图**（`classifyImageUploadIntent`，视觉模型）：没输入文字直接 `generate`；"这是什么/分析一下" `ask`；"根据截图生成但把 X 改成 Y" `generate-with-changes`。
 
 **预览区四件套**
-- **✦ 点选AI修改**：点选元素 + 临时 anchor 精确定位，以目标元素为锚点做局部作用域修改。
-- **✎ 普通编辑**：点选元素后用属性面板改单元素——文案/输入值/占位文案/图片 alt，以及字体/字号/字重/行高/字间距/对齐/文字颜色/内外边距/背景/边框/圆角/阴影/透明度等视觉属性
-- **⬇ 导出**：导出自包含 HTML 文件；
+- **点选AI修改**：点选元素 + 临时 anchor 精确定位，以目标元素为锚点做局部作用域修改。
+- **普通编辑**：点选元素后用属性面板改单元素——文案/输入值/占位文案/图片 alt，以及字体/字号/字重/行高/字间距/对齐/文字颜色/内外边距/背景/边框/圆角/阴影/透明度等视觉属性
 - **需求卡**：预览头「需求卡」打开评审浮窗（可拖动），手动建卡——BR 编号、P0/P1/P2 优先级、待复核/已确认/存疑/作废状态流转、按状态筛选。
 - **产品风格档案**：可选 Ant Design / TDesign / Vant / Apple / Claude / Notion / Slack / Vercel 共 8 个档案。
-
+- **导出**：导出自包含 HTML 文件；
 ---
 
 ## 桌面版（Mac + Windows）
