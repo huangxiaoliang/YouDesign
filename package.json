@@ -1,0 +1,148 @@
+{
+  "name": "youdesign",
+  "version": "0.2.0",
+  "private": true,
+  "description": "高保真原型设计 Agent：自然语言 → 可交互、可离线打开的原生 HTML 原型",
+  "license": "MIT",
+  "author": "YouDesign Contributors",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "dev": "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_API_KEY next dev",
+    "build": "next build",
+    "start": "env -u ANTHROPIC_BASE_URL -u ANTHROPIC_AUTH_TOKEN -u ANTHROPIC_API_KEY next start",
+    "desktop:dev": "ELECTRON_DEV=1 electron desktop/main.cjs",
+    "desktop:dev:online": "node scripts/desktop-dev-online.mjs",
+    "desktop:build": "npm run build && node scripts/prepare-desktop-standalone.mjs",
+    "desktop:pack:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false npm run desktop:build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dir",
+    "desktop:dmg:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false npm run desktop:build && CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --mac dmg",
+    "desktop:dmg:thin:mac": "CSC_IDENTITY_AUTO_DISCOVERY=false electron-builder --config electron-builder.thin.yml --mac dmg --arm64",
+    "desktop:nsis:thin:win": "electron-builder --config electron-builder.thin.win.yml --win nsis --x64",
+    "desktop:dist:mac": "npm run desktop:build && electron-builder --mac dmg",
+    "typecheck": "tsc --noEmit",
+    "tunnel": "node scripts/tunnel.mjs",
+    "test:prototype-contract": "node scripts/test-prototype-contract-regression.mjs",
+    "test:preview-navigation": "node scripts/test-preview-navigation-regression.mjs",
+    "test:capture-drawer": "node scripts/test-capture-drawer-runtime.mjs",
+    "test:capture-overlay": "node scripts/test-capture-overlay.mjs",
+    "test:captured-page-groups": "node scripts/test-captured-page-groups.mjs",
+    "test:captured-page-safety": "node scripts/test-captured-page-safety.mjs",
+    "test:export-history-bridge": "node scripts/test-export-history-bridge.mjs",
+    "test:preview-device-mode": "node scripts/test-preview-device-mode-regression.mjs",
+    "test:direct-html-editor": "node scripts/test-direct-html-editor-regression.mjs",
+    "test:session-brief": "node scripts/test-session-brief-regression.mjs",
+    "test:html-merge": "node scripts/test-html-merge-regression.mjs",
+    "test:usage-jsonl": "node scripts/test-usage-jsonl.mjs",
+    "test:desktop-claude-fragments": "node scripts/test-desktop-claude-fragments.mjs",
+    "test:desktop-claude-core": "node scripts/test-desktop-claude-core.mjs",
+    "test:desktop-windows-runtime": "node scripts/test-desktop-windows-runtime.mjs",
+    "test:capture-sanitization": "node scripts/test-capture-sanitization-regression.mjs",
+    "test:mysql-usage": "node scripts/test-mysql-usage.mjs",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@babel/parser": "^8.0.0",
+    "dompurify": "^3.4.12",
+    "idb": "^8.0.3",
+    "lzutf8": "^0.6.3",
+    "mammoth": "^1.12.0",
+    "marked": "^18.0.7",
+    "mysql2": "^3.23.2",
+    "next": "^15.3.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "remark-breaks": "^4.0.0",
+    "remark-gfm": "^4.0.1",
+    "undici": "^6.27.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "electron": "^38.4.0",
+    "electron-builder": "^26.0.12",
+    "esbuild": "^0.28.1",
+    "jsdom": "^26.1.0",
+    "playwright": "^1.61.1",
+    "react-resizable": "^4.0.2",
+    "typescript": "^5.7.0",
+    "util": "^0.12.5"
+  },
+  "build": {
+    "appId": "com.youdesign.app",
+    "productName": "YouDesign",
+    "asar": false,
+    "directories": {
+      "output": "dist-desktop"
+    },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "desktop/**/*",
+      ".next/standalone/**/*",
+      "package.json",
+      "!**/.env*",
+      "!data/**",
+      "!tmp/**",
+      "!vendor/**",
+      "!dist-desktop/**",
+      "!.next/standalone/data/**",
+      "!.next/standalone/tmp/**",
+      "!.next/standalone/vendor/**",
+      "!.next/standalone/dist-desktop/**"
+    ],
+    "protocols": [
+      {
+        "name": "YouDesign Capture",
+        "schemes": [
+          "youdesign"
+        ]
+      }
+    ],
+    "mac": {
+      "icon": "build/icon.icns",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "dir",
+          "arch": [
+            "arm64"
+          ]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "win": {
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "icon": "build/icon.png"
+    },
+    "dmg": {
+      "sign": false,
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  }
+}

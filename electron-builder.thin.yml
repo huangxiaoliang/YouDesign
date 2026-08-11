@@ -1,0 +1,42 @@
+appId: com.youdesign.app
+productName: YouDesign
+asar: false
+directories:
+  output: dist-desktop-thin
+artifactName: ${productName}-${version}-thin-${os}-${arch}.${ext}
+files:
+  - desktop/**/*
+  - package.json
+  - "!node_modules/**"
+  - "!**/.env*"
+  - "!data/**"
+  - "!tmp/**"
+  - "!vendor/**"
+  - "!dist-desktop*/**"
+  - "!.next/**"
+protocols:
+  - name: YouDesign Capture
+    schemes:
+      - youdesign
+mac:
+  # Explicit ad-hoc signing is required for internal thin builds. If signing is
+  # skipped, macOS may report "app is damaged" because Info.plist/resources are
+  # not sealed. Keep hardenedRuntime off unless using Developer ID + entitlements.
+  icon: build/icon.icns
+  identity: "-"
+  target:
+    - target: dmg
+      arch:
+        - arm64
+  category: public.app-category.productivity
+  hardenedRuntime: false
+  gatekeeperAssess: false
+dmg:
+  sign: false
+  contents:
+    - x: 130
+      y: 220
+    - x: 410
+      y: 220
+      type: link
+      path: /Applications

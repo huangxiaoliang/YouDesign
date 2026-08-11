@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+
+# 密钥扫描由 GitHub 原生 Secret scanning + Push protection 覆盖（仓库 Settings 已开启，
+# 公开仓库免费）。如需在 CI 里再跑一遍本地 gitleaks，可加一个 job 用 gitleaks/gitleaks-action@v2。

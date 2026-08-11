@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>YouDesign Capture 设置</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 24px;
+        width: 460px;
+        color: #1f2937;
+        font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #fff;
+      }
+      h1 {
+        margin: 0 0 16px;
+        font-size: 18px;
+      }
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+      }
+      input {
+        box-sizing: border-box;
+        width: 100%;
+        height: 36px;
+        padding: 6px 10px;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        font: inherit;
+      }
+      .hint {
+        margin: 8px 0 16px;
+        color: #6b7280;
+        font-size: 12px;
+      }
+      button {
+        height: 34px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: 6px;
+        color: #fff;
+        background: #1677ff;
+        font: inherit;
+        cursor: pointer;
+      }
+      .status {
+        margin-left: 10px;
+        color: #0f9f6e;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>YouDesign Capture</h1>
+    <label for="url">YouDesign 地址</label>
+    <input id="url" placeholder="http://localhost:3000/youdesign" />
+    <div class="hint">默认线上地址，也可以填本机调试地址。地址必须在扩展 manifest 允许的 host 范围内。</div>
+    <button id="save" type="button">保存</button>
+    <span id="status" class="status"></span>
+    <script src="options.js"></script>
+  </body>
+</html>
