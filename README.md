@@ -2,15 +2,17 @@
 
 [![CI](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml/badge.svg)](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-面向高保真原型设计场景：
-1、用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，**几秒到分钟级生成可交互的高保真原型**；
-2、Chrome插件提取指定页面，增删改相关功能；
-3、支持超大html页面的处理；
-4、支持点选局部修改（自然语言or直接编辑修改）；
-5、支持需求卡模式。
+高保真原型设计Agent：
+- 用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，**几秒到分钟级生成可交互的高保真原型**；
+- Chrome插件提取指定页面，进行二次设计；
+- 支持点选页面进行局部修改（自然语言or直接编辑修改）；
+- 支持需求卡模式。
 ---
 
 ## 快速开始
+
+- 体验地址：https://youdesign-gamma.vercel.app/youdesign 
+- 体验账号：邮件联系我 coolway.me@gmail.com
 
 ```bash
 npm install
