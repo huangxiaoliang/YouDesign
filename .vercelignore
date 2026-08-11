@@ -1,0 +1,17 @@
+# Local-only desktop release artifacts are not needed by the Next.js web deployment.
+dist-desktop/
+dist-desktop-thin/
+dist-desktop-thin-win/
+dist-desktop-thin-manual/
+dist-desktop-thin-current/
+
+# Local development and analysis artifacts.
+.playwright-cli/
+.claude/
+.codex/
+build/
+data/
+output/
+reference/
+tmp/
+vendor/

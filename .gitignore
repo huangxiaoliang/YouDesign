@@ -31,3 +31,5 @@ data/
 # 个人本地 Claude 配置（团队配置 .claude/settings.json + hooks 入库）
 .claude/settings.local.json
 
+.vercel
+.env*

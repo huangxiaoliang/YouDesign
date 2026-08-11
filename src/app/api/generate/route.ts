@@ -9,6 +9,8 @@ import { sanitizeSessionBrief, sanitizeSessionTurns } from "@/lib/pipeline/sessi
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+// Vercel Hobby with Fluid compute permits up to 300s; generation streams can include long model waits.
+export const maxDuration = 300;
 
 function parseTextModelPreference(value: unknown): ModelPreference {
   return value === "kimiK3" || value === "deepseek" || value === "glm" || value === "sonnet" || value === "opus" ? value : "auto";

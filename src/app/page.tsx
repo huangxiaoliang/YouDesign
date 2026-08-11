@@ -9,6 +9,7 @@ import {
   MsgContent,
   StyleProfilePicker,
   VISION_MODEL_PREFERENCE_OPTIONS,
+  resolveModelPreference,
 } from "@/components/PrototypeControls";
 import { STYLE_PROFILE_OPTIONS } from "@/lib/style/profiles";
 import { withBase } from "@/lib/basePath";
@@ -1048,12 +1049,14 @@ export default function Home() {
   const modelPickerUsesVision = images.length > 0 && (!result || resultIsRawHtml);
   const modelSelectValue: ModelPreference =
     modelPickerUsesVision
-      ? isVisionPreference(modelPreference)
-        ? modelPreference
-        : "glm5v"
-      : modelPreference === "glm5v"
-      ? "auto"
-      : modelPreference;
+      ? resolveModelPreference(
+          isVisionPreference(modelPreference) ? modelPreference : "glm5v",
+          VISION_MODEL_PREFERENCE_OPTIONS,
+        )
+      : resolveModelPreference(
+          modelPreference === "glm5v" ? "auto" : modelPreference,
+          MODEL_PREFERENCE_OPTIONS,
+        );
   // 发出消息后锁定生成态选项（快速/风格）；模型允许在编辑态为本次修改重新选择。
   const optionsLocked = messages.length > 0;
   const styleLocked = optionsLocked;
@@ -1078,12 +1081,14 @@ export default function Home() {
     const requestUsesVisionModel = forwardImages;
     const requestModelPreference: ModelPreference =
       requestUsesVisionModel
-        ? isVisionPreference(modelPreference)
-          ? modelPreference
-          : "glm5v"
-        : modelPreference === "glm5v"
-        ? "auto"
-        : modelPreference;
+        ? resolveModelPreference(
+            isVisionPreference(modelPreference) ? modelPreference : "glm5v",
+            VISION_MODEL_PREFERENCE_OPTIONS,
+          )
+        : resolveModelPreference(
+            modelPreference === "glm5v" ? "auto" : modelPreference,
+            MODEL_PREFERENCE_OPTIONS,
+          );
     if (loading) return;
     // 编辑态必须有指令文本；生成态允许仅靠附件（原样打开上传页）。
     if (!text && (activeResult || !hasAttach)) return;
