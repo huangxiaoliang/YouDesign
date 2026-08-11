@@ -3,7 +3,7 @@
 [![CI](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml/badge.svg)](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 高保真原型设计Agent：
-- 用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，**几秒到分钟级生成可交互的高保真原型**；
+- 用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，分钟级生成可交互的高保真原型；
 - Chrome插件提取指定页面，进行二次设计；
 - 支持点选页面进行局部修改（自然语言or直接编辑修改）；
 - 支持需求卡模式。
@@ -76,8 +76,8 @@ npm run build && npm run start    # http://localhost:3000/youdesign
 - **✦ 点选AI修改**：点选元素 + 临时 anchor 精确定位，以目标元素为锚点做局部作用域修改。
 - **✎ 普通编辑**：点选元素后用属性面板改单元素——文案/输入值/占位文案/图片 alt，以及字体/字号/字重/行高/字间距/对齐/文字颜色/内外边距/背景/边框/圆角/阴影/透明度等视觉属性
 - **⬇ 导出**：导出自包含 HTML 文件；
-**需求评审卡**：预览头「需求卡」打开评审浮窗（可拖动），手动建卡——BR 编号、P0/P1/P2 优先级、待复核/已确认/存疑/作废状态流转、按状态筛选。
-**产品风格档案**：可选 Ant Design / TDesign / Vant / Apple / Claude / Notion / Slack / Vercel 共 8 个档案，把产品的配色/圆角/间距/表格/表单/弹层/加载等规范注入生成（`src/lib/style/profiles.ts`）。新增产品往 `STYLE_PROFILES` 加一项即可。选中档案但尚未生成时，预览区会先显示该风格的**视觉预览卡**，方便确认风格再开始。
+- **需求卡**：预览头「需求卡」打开评审浮窗（可拖动），手动建卡——BR 编号、P0/P1/P2 优先级、待复核/已确认/存疑/作废状态流转、按状态筛选。
+- **产品风格档案**：可选 Ant Design / TDesign / Vant / Apple / Claude / Notion / Slack / Vercel 共 8 个档案。
 
 ---
 
@@ -103,7 +103,7 @@ npm run desktop:dist:mac         # 正式 DMG 入口（需 Developer ID 证书�
 
 ---
 
-## 浏览器抓取扩展
+## Chrome浏览器抓取扩展
 
 `extension/youdesign-capture/` 是 Chrome MV3 扩展（v0.2.9）。
 
