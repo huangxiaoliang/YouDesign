@@ -63,7 +63,7 @@
     "@types/node": "^22.10.0",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
-    "electron": "^38.4.0",
+    "electron": "^39.8.10",
     "electron-builder": "^26.0.12",
     "esbuild": "^0.28.1",
     "jsdom": "^26.1.0",
