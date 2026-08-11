@@ -1,12 +1,14 @@
 # YouDesign · 高保真原型设计 Agent
 
+中文 | [English](./README.en.md)
+
 [![CI](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml/badge.svg)](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 **高保真原型设计Agent：**
 - 用自然语言（可附截图 / HTML及资源包 / Markdown）描述页面，分钟级生成可交互的高保真原型；
 - **Chrome插件**抓取指定页面，进行二次设计；
 - **Mac/Windows桌面端**支持超大html的二次设计；
-- 支持 点选页面 指定区域 进行 局部深度修改（自然语言 or 直接编辑修改）；
+- 支持 点选页面指定区域 进行 局部深度修改（自然语言 or 直接编辑修改）；
 - 支持需求卡模式，内置Ant Design等多种设计风格。
 - **Web地址**：https://youdesign-gamma.vercel.app/youdesign 
 - **体验账号**：邮件联系 coolway.me@gmail.com
