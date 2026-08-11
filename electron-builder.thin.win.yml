@@ -1,0 +1,37 @@
+appId: com.youdesign.app
+productName: YouDesign
+asar: false
+directories:
+  output: dist-desktop-thin-win
+artifactName: ${productName}-${version}-thin-win-${arch}.${ext}
+files:
+  - desktop/**/*
+  - package.json
+  - "!node_modules/**"
+  - "!**/.env*"
+  - "!data/**"
+  - "!tmp/**"
+  - "!vendor/**"
+  - "!dist-desktop*/**"
+  - "!.next/**"
+protocols:
+  - name: YouDesign Capture
+    schemes:
+      - youdesign
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+  requestedExecutionLevel: asInvoker
+  signExecutable: false
+nsis:
+  oneClick: true
+  perMachine: false
+  packElevateHelper: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: YouDesign
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false

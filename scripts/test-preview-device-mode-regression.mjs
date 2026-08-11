@@ -1,0 +1,54 @@
+#!/usr/bin/env node
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+
+const previewSource = readFileSync(new URL("../src/components/PreviewPane.tsx", import.meta.url), "utf8");
+const pageSource = readFileSync(new URL("../src/app/page.tsx", import.meta.url), "utf8");
+const sessionSource = readFileSync(new URL("../src/lib/store/sessions.ts", import.meta.url), "utf8");
+const typesSource = readFileSync(new URL("../src/lib/types.ts", import.meta.url), "utf8");
+const styles = readFileSync(new URL("../src/app/globals.css", import.meta.url), "utf8");
+const navigationSource = readFileSync(new URL("../src/lib/previewNavigation.ts", import.meta.url), "utf8");
+
+assert.match(previewSource, /预览\{hasPreview \? ` · \$\{/, "预览页签应显示当前视口模式");
+assert.match(previewSource, /scheduleDeviceMenuOpen/, "整个预览页签应支持悬停打开设备菜单");
+assert.match(previewSource, /\}, 200\);/, "预览页签悬停 0.2 秒后应打开设备菜单");
+assert.match(previewSource, /onClick=\{handlePreviewTabClick\}/, "点击预览页签应立即切换并打开设备菜单");
+assert.doesNotMatch(previewSource, /className="preview-device-trigger"/, "不应保留独立的小箭头点击区");
+assert.match(previewSource, /value: "auto",[\s\S]*?label: "自动"/, "预览菜单应包含自动模式");
+assert.match(previewSource, /value: "mobile",[\s\S]*?label: "手机"/, "预览菜单应包含手机模式");
+assert.match(previewSource, /<strong>桌面<\/strong>/, "预览菜单应包含桌面模式");
+assert.match(previewSource, /previewDeviceMode === "auto" \? automaticDevice : previewDeviceMode/, "自动模式应跟随原型设备");
+assert.match(typesSource, /MobilePreviewShell = "wecom" \| "ios" \| "android"/, "手机预览应定义企微、苹果、安卓三种外壳");
+assert.match(previewSource, /wecom: \{ label: "企微", width: 390, height: 844/, "企微应为默认 390×844 预设");
+assert.match(previewSource, /ios: \{ label: "苹果", width: 393, height: 852/, "苹果应使用 393×852 预设");
+assert.match(previewSource, /android: \{ label: "安卓", width: 412, height: 915/, "安卓应使用 412×915 预设");
+assert.match(previewSource, /className="preview-mobile-shells"/, "手机预设应作为手机模式的内嵌子选项");
+assert.match(previewSource, /className=\{`preview-device-shell\$\{mobile/, "手机外壳应位于预览宿主层");
+assert.match(previewSource, /className="preview-viewport" ref=\{viewportRef\}[\s\S]*?<iframe/, "iframe 应渲染在独立内容视口内");
+assert.match(previewSource, /viewportRef\.current\?\.clientWidth/, "点选浮窗应按 iframe 内容视口定位");
+assert.match(previewSource, /previewBodyRef\.current/, "设备切换应控制外层预览画布");
+assert.match(previewSource, /requestAnimationFrame\(\(\) => body\?\.scrollTo/, "手机外壳切换后应在布局稳定时归位顶部");
+assert.match(previewSource, /function installPreviewHistoryTracking\(\)/, "企微外壳应监听 iframe 内部历史");
+assert.match(navigationSource, /history\.pushState = function/, "iframe 导航守卫应识别 pushState 子页面");
+assert.match(navigationSource, /addEventListener\('hashchange'/, "iframe 导航守卫应识别 Hash 子页面");
+assert.match(navigationSource, /__ydBackStack\.push/, "重复进入子页必须写入统一回退栈");
+assert.match(previewSource, /cw\.__ydCanGoBack \? cw\.__ydCanGoBack\(\)/, "企微外壳应同步 iframe 回退状态");
+assert.match(previewSource, /function handleWecomPreviewBack\(\)[\s\S]*?cw\.__ydGoBack\?\.\(\)/, "企微返回只能操作 iframe 内统一回退栈");
+assert.match(previewSource, /className="wecom-shell-back"[\s\S]*?disabled=\{!canPreviewGoBack\}/, "没有上级历史时企微返回按钮应禁用");
+assert.doesNotMatch(previewSource, /result\.device\s*=/, "预览切换不得改写原型 device");
+assert.match(pageSource, /previewDeviceMode=\{previewDeviceMode\}/, "首页应把会话预览偏好传入预览组件");
+assert.match(pageSource, /mobilePreviewShell=\{mobilePreviewShell\}/, "首页应把手机外壳偏好传入预览组件");
+assert.match(pageSource, /saveSessionPreviewSettings\(sessionId, \{ previewDeviceMode: mode \}\)/, "设备模式应独立持久化");
+assert.match(pageSource, /previewDeviceMode: "mobile",[\s\S]*?mobilePreviewShell: shell/, "选择手机外壳应同时切到手机模式并原子持久化");
+assert.match(pageSource, /rec\.mobilePreviewShell \?\? "wecom"/, "旧会话应默认迁移到企微外壳");
+assert.match(sessionSource, /不改 updatedAt \/ 摘要索引/, "预览偏好持久化不得把会话重新置顶");
+assert.match(styles, /\.preview-stage\.mobile \{[\s\S]*?--preview-device-width, 390px/, "手机预览应使用预设真实窄视口并兼容旧默认");
+assert.match(styles, /\.wecom-shell-nav \{/, "企微预设应包含独立顶部导航外壳");
+assert.match(styles, /\.wecom-shell-back:disabled \{/, "企微返回按钮应有明确禁用态");
+assert.match(styles, /\.preview-device-shell\.mobile-shell\.ios \{/, "苹果预设应包含独立外壳");
+assert.match(styles, /\.preview-device-shell\.mobile-shell\.android \{/, "安卓预设应包含独立外壳");
+assert.match(styles, /\.preview-stage\.mobile:fullscreen \.mobile-shell \{/, "手机全屏应保留完整外壳");
+assert.match(styles, /\.preview-body\.mobile \{[\s\S]*?overflow-anchor: none/, "手机预览应关闭滚动锚定，避免顶部外壳被自动卷走");
+assert.doesNotMatch(styles, /\.preview-stage\.mobile \{[\s\S]*?transform:\s*scale/, "手机预览不得使用缩放模拟视口");
+
+console.log("preview device mode regression: ok");

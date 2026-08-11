@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>YouDesign Capture</title>
+    <style>
+      body{width:280px;margin:0;padding:14px;box-sizing:border-box;color:#1f2937;font:13px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}h1{margin:0 0 4px;font-size:16px}.hint{margin:0 0 10px;color:#6b7280;font-size:12px}.actions{display:flex;gap:8px;margin-top:10px}button{height:32px;padding:0 10px;border:0;border-radius:6px;background:#1677ff;color:#fff;font:inherit;cursor:pointer}button.secondary{background:#eef4ff;color:#165dba}.status{min-height:18px;margin-top:8px;color:#6b7280;font-size:12px}
+    </style>
+  </head>
+  <body>
+    <h1>YouDesign Capture <small id="extension-version" style="color:#6b7280;font-size:11px;font-weight:400"></small></h1>
+    <p class="hint">当前页抓取，或选择若干预加载/懒加载页签进行离线合并。</p>
+    <div class="actions"><button id="capture-current">抓取当前页</button><button id="inspect-tabs" class="secondary">多页签采集</button></div>
+    <div id="status" class="status"></div>
+    <script src="popup.js"></script>
+  </body>
+</html>

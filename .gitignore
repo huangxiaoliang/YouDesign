@@ -1,0 +1,33 @@
+node_modules
+.next
+out
+.env
+.env.local
+*.log
+.DS_Store
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# 原始 DPL 组件源码（仅用于离线提炼，不入库；只提交提炼后的紧凑产物）
+vendor/
+
+# 本地分析/自测产物与参考代码，不入库
+.playwright-cli/
+output/
+reference/
+tmp/
+dist-desktop/
+dist-desktop-thin/
+dist-desktop-thin-win/
+dist-desktop-thin-manual/
+dist-desktop-thin-current/
+
+# IDE
+.idea/
+
+.codex/
+data/
+
+# 个人本地 Claude 配置（团队配置 .claude/settings.json + hooks 入库）
+.claude/settings.local.json
+
