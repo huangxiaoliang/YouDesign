@@ -26,20 +26,38 @@ type StylePreviewMeta = {
   shadow?: string;
 };
 
-export const MODEL_PREFERENCE_OPTIONS: Array<{ value: ModelPreference; label: string }> = [
+export type ModelPreferenceOption = {
+  value: ModelPreference;
+  label: string;
+  disabled?: boolean;
+  disabledReason?: string;
+};
+// Sonnet/Opus 暂不可选（可见不可选），文本与图片模式均禁用。
+const UNAVAILABLE_REASON = "暂不可用";
+export const MODEL_PREFERENCE_OPTIONS: ModelPreferenceOption[] = [
   { value: "auto", label: "默认模型" },
   { value: "kimiK3", label: "kimi-k3" },
   { value: "deepseek", label: "DeepSeek" },
   { value: "glm", label: "GLM-5.2" },
-  { value: "sonnet", label: "Sonnet" },
-  { value: "opus", label: "Opus" },
+  { value: "sonnet", label: "Sonnet", disabled: true, disabledReason: UNAVAILABLE_REASON },
+  { value: "opus", label: "Opus", disabled: true, disabledReason: UNAVAILABLE_REASON },
 ];
-export const VISION_MODEL_PREFERENCE_OPTIONS: Array<{ value: ModelPreference; label: string }> = [
+export const VISION_MODEL_PREFERENCE_OPTIONS: ModelPreferenceOption[] = [
   { value: "glm5v", label: "GLM-5V" },
   { value: "kimiK3", label: "kimi-k3" },
-  { value: "sonnet", label: "Sonnet" },
-  { value: "opus", label: "Opus" },
+  { value: "sonnet", label: "Sonnet", disabled: true, disabledReason: UNAVAILABLE_REASON },
+  { value: "opus", label: "Opus", disabled: true, disabledReason: UNAVAILABLE_REASON },
 ];
+
+// 若当前值对应的选项被禁用（如历史会话恢复到 sonnet/opus），回退到该列表首个可选项。
+export function resolveModelPreference(
+  value: ModelPreference,
+  options: ModelPreferenceOption[],
+): ModelPreference {
+  const current = options.find((option) => option.value === value);
+  if (current && !current.disabled) return value;
+  return options.find((option) => !option.disabled)?.value ?? value;
+}
 
 const STYLE_PREVIEWS: StylePreviewMeta[] = [
   {
@@ -472,7 +490,7 @@ export function ModelPreferencePicker({
   onChange: (value: ModelPreference) => void;
   disabled?: boolean;
   title: string;
-  options?: Array<{ value: ModelPreference; label: string }>;
+  options?: ModelPreferenceOption[];
 }) {
   const [open, setOpen] = useState(false);
   const pickerRef = useRef<HTMLDivElement>(null);
@@ -574,21 +592,28 @@ export function ModelPreferencePicker({
       {open && (
         <div className="style-picker-popover" onKeyDown={(e) => e.key === "Escape" && setOpen(false)}>
           <div className="style-picker-list" role="listbox" aria-label="模型选择">
-            {options.map((option) => (
-              <button
-                type="button"
-                key={option.value}
-                className={`style-picker-option${option.value === value ? " selected" : ""}`}
-                onClick={() => {
-                  onChange(option.value);
-                  setOpen(false);
-                }}
-                role="option"
-                aria-selected={option.value === value}
-              >
-                {option.label}
-              </button>
-            ))}
+            {options.map((option) => {
+              const isDisabled = !!option.disabled;
+              return (
+                <button
+                  type="button"
+                  key={option.value}
+                  className={`style-picker-option${option.value === value ? " selected" : ""}${isDisabled ? " disabled" : ""}`}
+                  onClick={() => {
+                    if (isDisabled) return;
+                    onChange(option.value);
+                    setOpen(false);
+                  }}
+                  role="option"
+                  aria-selected={option.value === value}
+                  aria-disabled={isDisabled || undefined}
+                  tabIndex={isDisabled ? -1 : 0}
+                  title={isDisabled ? option.disabledReason : undefined}
+                >
+                  {option.label}
+                </button>
+              );
+            })}
           </div>
         </div>
       )}

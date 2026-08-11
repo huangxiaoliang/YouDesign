@@ -1705,6 +1705,17 @@ button {
   color: var(--brand);
   font-weight: 600;
 }
+.style-picker-option.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.style-picker-option.disabled:hover,
+.style-picker-option.disabled.hover,
+.style-picker-option.disabled:focus-visible {
+  outline: none;
+  background: transparent;
+  color: var(--muted);
+}
 .style-picker-hover-preview {
   position: absolute;
   left: calc(100% + 10px);

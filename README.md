@@ -2,10 +2,12 @@
 
 [![CI](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml/badge.svg)](https://github.com/huangxiaoliang/YouDesign/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
-面向产品经理：用自然语言（可附截图 / HTML / HTML 资源包 ZIP / Word / Markdown）描述页面，**几秒到分钟级生成可交互的高保真原型**——产出**自包含、可离线打开的原生 HTML**（内联 CSS/JS，`srcDoc` 渲染，预览里可直接改）。会话**自动存进浏览器**（IndexedDB），刷新不丢、可查看/切换历史会话。
-
-> 护城河在「需求 → 结构化 → 组件检索/生成 → 真实渲染」这条管线和提示词，不在外壳。面向 AI 协作工具与人类协作者的统一约定见 [`AGENTS.md`](./AGENTS.md)。
-
+面向高保真原型设计场景：
+1、用自然语言（可附截图 / HTML及资源包/ Word / Markdown）描述页面，**几秒到分钟级生成可交互的高保真原型**；
+2、Chrome插件提取指定页面，增删改相关功能；
+3、支持超大html页面的处理；
+4、支持点选局部修改（自然语言or直接编辑修改）；
+5、支持需求卡模式。
 ---
 
 ## 快速开始
@@ -67,27 +69,13 @@ npm run build && npm run start    # http://localhost:3000/youdesign
 - HTML：作为 `srcDoc` 渲染的基础。ZIP：自动找 `index.html`，把相对 CSS/图片/字体等资源转成自包含 HTML；为避免打包应用脚本在 `srcDoc` 中清空页面，ZIP 原样打开以静态可见为优先、禁用脚本。
 - **HTML 上传意图**（`classifyHtmlUploadIntent`）：没输入文字直接 `open`；含"重新生成/重做/参考它做新的"等 `regenerate`（参考上传页重新生成）；含"改/调整/优化/删/加"等 `edit`（原页最小修改）；纯提问 `ask`（原样打开并回答）。
 - **图片上传意图**（`classifyImageUploadIntent`，视觉模型）：没输入文字直接 `generate`；"这是什么/分析一下" `ask`；"根据截图生成但把 X 改成 Y" `generate-with-changes`。
-- 附件发送后在对话气泡下方回显为可点击 chip，点开看原图/原文件（图片为原图；Word/ZIP 下载原文件）；桌面客户端经 preload 桥打开（HTML 注入 CSP+禁脚本），Web 端用浏览器直接打开/下载。
-
-**多 HTML 合并**：在已有原生 HTML 原型的编辑态，可继续上传一个或多个 HTML 页面，按指令**程序化合并**进当前原型（不调模型重写、秒级、保留次要页真实数据）。合并主/次页、形态与子页面名优先由一次轻量 LLM 抽取（best-effort，失败回退规则）。抽屉形态（缺省）把次要页抽屉片段嵌进主页；导航形态（指令写"新页面打开"）点主页触发点用全屏 iframe 打开整页次要页，支持多级合并与下钻树自动发现。触发点按次要页文件名匹配，找不到或次要页非抽屉结构时直接提示怎么修（不回退模型重写）。
 
 **预览区四件套**
-- **✦ 点选修改**：点选元素 + 临时 anchor 精确定位，以目标元素为锚点做局部作用域修改。编辑前先结构化拆解指令（交互/批量/需整页的自动改走整页或 Claude，其余定位到单点 scope）；编辑后过结构完整性校验 + 空改检测，交互类编辑要求检测到交互改动，否则保留原页并引导。删除/隐藏/单点 color/attr/text 替换走确定性快路径不调 LLM；去重沿祖先链找含≥2 同签名直接子的最小容器一次性去重。
-- **✎ 编辑**：点选元素后用属性面板改单元素——文案/输入值/占位文案/图片 alt，以及字体/字号/字重/行高/字间距/对齐/文字颜色/内外边距/背景/边框/圆角/阴影/透明度等视觉属性；改完即时 inline 预览，无效 CSS 就地报错并禁止保存，支持撤销/重做/重置与沿面包屑选父级；面板可拖动。**保存**推进新版本、**放弃**重载回原页（全程不调模型）。
-- **⬇ 导出**：导出自包含 HTML 文件；抓取页导出前会再次重建离线版本。**导出/分享都先弹窗确认文件名**（默认用会话标题、可改、改名持久化到会话但不同步会话标题）；**桌面端静默存到下载目录**（不弹系统「另存为」框，完成后提示保存路径 + 「打开文件夹」），网页端走浏览器默认下载。预览切到手机但原型实为 PC/抓取页时，导出会自动把整页装进手机宽度 iframe，并注入 history bridge 让分享链接能用系统返回回退多级页面。
-- **🔗 分享**：把当前原型（与「导出」同源）生成分享链接（桌面端经 preload 桥静默保存到下载目录，网页端浏览器下载）。
-
-**需求评审卡**：预览头「需求卡」打开评审浮窗（可拖动），手动建卡——BR 编号、P0/P1/P2 优先级、待复核/已确认/存疑/作废状态流转、按状态筛选。每张卡可点「关联区块」在预览里点选元素绑定位置，hover 卡片或页内 marker 会画出连线互相定位。原型改出新版本后卡片自动继承并进入「待复核」（关联锚点随 DOM 变化失效，可一键标记已复核）。导出/分享时勾选「附带需求卡」会把评审面板 + marker 连同原型一起打包，也可单独导出 Markdown 评审清单。卡集随原型版本保存与回退。
-
-**原型页面跳转拦截**（三层防线）：原型在 srcDoc iframe 里运行，任何真实 URL 跳转（`location.href`、非 `#` 的 href、form action、`window.open` 等）都会把 YouDesign 自己加载进预览区形成「页面套页面」。① 生成/编辑提示词严禁真实导航；② 服务端静态门禁 `unsafePrototypeNavigation`（8 类模式）——修不掉则拦截并保留原页/给可读兜底页，上传原样打开不改文件只提示；③ 预览期兜底——iframe srcDoc 注入临时守卫脚本拦非锚点链接/表单提交/`window.open`，若仍被绕过导致 iframe 跳走则自动恢复原预览并提示。守卫只在预览注入，导出/保存/送模型的 HTML 保持原样。
-
+- **✦ 点选AI修改**：点选元素 + 临时 anchor 精确定位，以目标元素为锚点做局部作用域修改。
+- **✎ 普通编辑**：点选元素后用属性面板改单元素——文案/输入值/占位文案/图片 alt，以及字体/字号/字重/行高/字间距/对齐/文字颜色/内外边距/背景/边框/圆角/阴影/透明度等视觉属性
+- **⬇ 导出**：导出自包含 HTML 文件；
+**需求评审卡**：预览头「需求卡」打开评审浮窗（可拖动），手动建卡——BR 编号、P0/P1/P2 优先级、待复核/已确认/存疑/作废状态流转、按状态筛选。
 **产品风格档案**：可选 Ant Design / TDesign / Vant / Apple / Claude / Notion / Slack / Vercel 共 8 个档案，把产品的配色/圆角/间距/表格/表单/弹层/加载等规范注入生成（`src/lib/style/profiles.ts`）。新增产品往 `STYLE_PROFILES` 加一项即可。选中档案但尚未生成时，预览区会先显示该风格的**视觉预览卡**，方便确认风格再开始。
-
-**品牌色保真**：模型对"眼熟"的常见色有先验，会把规范里的精确品牌色取整/近似。两道闸口：① 提示词铁律强制逐字照抄规范色值；② 生成/自评审/编辑后做一次确定性就近吸附，把漂移的近似品牌色矫正回规范 token（仅吸附有显著色相的品牌主色，中性灰要求精确匹配）。
-
-**占位图规范**：生成代码**严禁**外链占位图服务（via.placeholder.com 已停服、placehold.co / picsum / unsplash 等显示破损图标）。需要图片占位时按优先级用内联 SVG / data URI，或纯文字 + emoji。
-
-**体验**：默认快速模式（秒出原型），可关进高质量模式；生成**流式输出**（代码区边生成边显示，预览在最终结果到达后一次性渲染）、可**中途停止**、**请求失败自动重试**（前端对流式中断/网络异常最多重试 2 次，HTTP 错误响应与用户取消不重试；服务端 `httpFetch` 对网络层抛错与过载/网关响应 429/502/503/504 退避重试最多 3 次、尊重 `Retry-After`，500 等真实错误不重试）、**版本回退**（↩/↪）、回车发送、↑/↓ 回溯历史输入、生成/桌面增强进行中**离开页面前二次确认**、首次生成**骨架占位**（按模式/场景显示预估时长）；预览空态内置示例提示词卡片（可按设备 PC/手机与产品分类筛选、每次刷新随机洗牌、一键复制，`src/app/example-prompts.ts`）；预览区支持两栏/三栏布局切换；预览视口可切 auto/手机/桌面，手机模式可选企微/苹果/安卓三套外壳；预览头「更多」菜单可切 5 套 UI 主题（应用外壳配色，与产品风格档案是两回事）与退出登录，用户名可点击打开**用量看板** `/usage`（按人/模型/天统计 token 与费用）。
 
 ---
 
@@ -107,7 +95,7 @@ npm run desktop:dist:mac         # 正式 DMG 入口（需 Developer ID 证书�
 
 - 客户端直接进入 Web 登录页，复用 Web 登录鉴权。
 - macOS 双击 App 不一定继承终端 `PATH`，客户端自动探测 `~/.claude/local`、Homebrew、npm global、nvm/fnm/volta/asdf 等 Claude CLI 安装位置；Windows 优先 `where.exe`/`PATH`/npm 全局查找 `claude.exe`/`claude.cmd`，并检查 Git Bash。
-- Claude 大 HTML 编辑串行排队、按任务 ID 精准取消，同一时间只拉起一个 Claude CLI 任务；bridge v5 校验客户端能力，renderer 只传资源占位 HTML + 资源表 + 完整页 SHA256，Electron 原样重建避免 IPC 双份 HTML。预算触顶/最大轮次不直接失败，改走「校验已写入结果」分支抢救。Claude 未改动页面时给「澄清/已满足」两条明确出口，不伪装成成功。
+- Claude 大 HTML 编辑串行排队、按任务 ID 精准取消，同一时间只拉起一个 Claude CLI 任务；
 - 薄包必须保留 `mac.identity: "-"` 做 ad-hoc 签名且 `hardenedRuntime: false`，否则 macOS 可能提示"应用已损坏"。ad-hoc 内测包仍可能被 Gatekeeper quarantine 拦截，可执行 `xattr -dr com.apple.quarantine /Applications/YouDesign.app`。正式分发仍需 Developer ID 签名 + 公证。
 - 公网下载 Electron 资源失败时按需加代理：`HTTPS_PROXY=http://127.0.0.1:7890 HTTP_PROXY=http://127.0.0.1:7890 npm run desktop:dmg:thin:mac`。
 
@@ -115,14 +103,10 @@ npm run desktop:dist:mac         # 正式 DMG 入口（需 Developer ID 证书�
 
 ## 浏览器抓取扩展
 
-`extension/youdesign-capture/` 是 Chrome MV3 扩展（v0.2.9）。在业务页登录后点击扩展图标弹出 popup，两个入口：
+`extension/youdesign-capture/` 是 Chrome MV3 扩展（v0.2.9）。
 
-- **抓取当前页**（扩展持有 `<all_urls>` host 权限，加载期即注入 `drawer_tracker` 跟踪点击）：捕获渲染后整页 DOM（禁用脚本、内联可读 CSS、远程 CSS/小图转 data URL、src/href 绝对化、5MB 总上限，仅允许 `http(s)://` 业务页），并记录交互元信息（已打开的抽屉/模态框及其开关按钮/遮罩、已在 DOM 的标准/Ant Design 页签、内嵌 iframe）。跨域图片污染而无法 `toDataURL` 的可见 canvas，会从当前标签页截图按坐标裁成 PNG 回填；不可见/越界/不支持时明确降级为占位。
+- **抓取当前页**（扩展持有 `<all_urls>` host 权限，加载期即注入 `drawer_tracker` 跟踪点击）：捕获渲染后整页 DOM（禁用脚本、内联可读 CSS、远程 CSS/小图转 data URL、src/href 绝对化、5MB 总上限，仅允许 `http(s)://` 业务页），并记录交互元信息（已打开的抽屉/模态框及其开关按钮/遮罩、已在 DOM 的标准/Ant Design 页签、内嵌 iframe）。
 - **多页签采集**：注入可拖动「页签采集」浮窗。扩展识别页面里的标准 / Ant Design 页签组（2-16 个），以当前 DOM 为基线，默认已打开页签自动采集；用户在来源页逐个点开懒加载页签、点「采集当前」逐一抓取面板内容，最后「合并发送」把所有已采集页签合并成一个离线页。
-
-投递：经 `youdesign://capture` 拉起并聚焦桌面端，再 POST `http://127.0.0.1:17631/capture/import`（带 `x-youdesign-capture` 头）；桌面端收到后**开新会话、把 HTML 当附件留在对话框**（顶部浮层提示「页面已添加到对话框，请开始修改」、4 秒消失），由用户补需求后发送，**不自动生成**。桌面端不可用时回退 YouDesign Web 的 `window.postMessage`。扩展需在 `chrome://extensions` 开发者模式下「加载已解压」安装，默认 YouDesign 地址 `http://localhost:3000/youdesign`（在扩展选项页可改）。
-
-抓取页经服务端 `buildCapturedPageAttachment` 重建为**离线可交互**预览：抽屉可开/关（含父子级联、Esc 关闭、点遮罩关闭）、页签可点击切换（含键盘 ←→/Home/End）、内嵌 iframe 静态化或占位；交互只由 YouDesign 自有的受控 runtime 驱动（来源页脚本一律禁用，桌面附件用 CSP sha256 hash 仅放行该 runtime）。详见 [`extension/youdesign-capture/README.md`](./extension/youdesign-capture/README.md)。
 
 ---
 
@@ -160,7 +144,7 @@ nginx 原样透传 `/youdesign/` 前缀（不要 strip），`proxy_buffering off
 ## 架构 / 生成管线
 
 ```
-PM 自然语言 / 上传  ──POST /api/generate（NDJSON 流式，需登录 cookie）──▶ orchestrator.ts
+ 自然语言 / 上传  ──POST /api/generate（NDJSON 流式，需登录 cookie）──▶ orchestrator.ts
   HTML/ZIP 上传      ZIP 前端转自包含 HTML；先过 intent 意图识别再分流
   intent 意图识别    编辑 classifyEditIntent 判改/问；HTML 上传 classifyHtmlUploadIntent 判 open/edit/regenerate/ask；图片上传 classifyImageUploadIntent 判 ask/generate/generate-with-changes
   ⓪ 预检 preflight     一次 flash 判「需求是否明确」+「PC/移动端 device」，模糊则反问暂停；快速图片模式跳过 LLM 预检、规则判端+单页直出
@@ -172,7 +156,7 @@ PM 自然语言 / 上传  ──POST /api/generate（NDJSON 流式，需登录 c
   ③.6 自评审 review      按风险分级（当前临时整体跳过，见 AGENTS §6）
   ③.7 品牌色矫正 normalize 生成/自评审/编辑后兜底：按 themeCss token 就近吸附漂移的近似品牌色，中性灰精确匹配
   ④ 预览 preview        原生 HTML → srcDoc（统一注入临时导航守卫拦截真实页面跳转、超宽表格包横向滚动容器，序列化/导出前剥除）
-  ⑤ 迭代 edit           HTML 产物用 HtmlSizeInfo 统一判断体量：普通对话框编辑按原始 HTML 体积看，≥640KB 统一发 desktop-claude-required 事件（事件带 editHtml+assets+instruction+focus，由 preload bridge 交给 Electron 主进程调用本机 Claude Code CLI；纯浏览器 Web 没有 bridge，保留原页并提示点选修改/缩小范围）；对话式编辑先试整页确定性快路径（裸「把 X 改成 Y」整页恰好命中 1 处、0 LLM）；点选修改保持局部 scope patch 优先（编辑前 planHtmlEdit 结构化路由；删除/隐藏/单点 color/attr/text 走确定性快路径不调 LLM；去重走 selectDedupScope）；所有产出点过结构完整性校验，否则保留原页
+  ⑤ 迭代 edit           HTML 产物用 HtmlSizeInfo 统一判断体量
 ```
 
 - **登录门禁**：`src/middleware.ts` 拦截未登录请求（页面跳 `/login`、接口返 401）。
